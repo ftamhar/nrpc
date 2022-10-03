@@ -13,7 +13,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
 
-	"github.com/T-J-L/nrpc"
+	"github.com/ftamhar/nrpc"
 )
 
 //go:generate protoc --go_out=. --go_opt=paths=source_relative nrpc_test.proto
@@ -79,7 +79,7 @@ func TestDecode(t *testing.T) {
 	}
 	defer subn.Unsubscribe()
 
-	var names = []string{"lorem", "ipsum", "dolor"}
+	names := []string{"lorem", "ipsum", "dolor"}
 	for _, n := range names {
 		name = n
 		var dm DummyMessage
@@ -347,7 +347,7 @@ func TestMarshalUnmarshalResponse(t *testing.T) {
 					t.Error("Expects payload to start with a '0', got", data[0])
 				}
 			case "json":
-				var expected = `{"__error__":{"type":"SERVER","message":"Some error"}}`
+				expected := `{"__error__":{"type":"SERVER","message":"Some error"}}`
 				if string(data) != expected {
 					t.Errorf("Invalid json-encoded error. Expects %s, got %s", expected, string(data))
 				}
@@ -405,16 +405,24 @@ func TestParseSubject(t *testing.T) {
 		{"", 0, "foo", 0, 0, "foo.bar", nil, nil, nil, "bar", "protobuf", ""},
 		{"", 0, "foo", 0, 0, "foo.bar.protobuf", nil, nil, nil, "bar", "protobuf", ""},
 		{"", 0, "foo", 0, 0, "foo.bar.json", nil, nil, nil, "bar", "json", ""},
-		{"", 0, "foo", 0, 0, "foo.bar.json.protobuf", nil, nil, nil, "bar", "",
-			"Invalid subject tail length. Expects 0 or 1 parts, got 2"},
+		{
+			"", 0, "foo", 0, 0, "foo.bar.json.protobuf", nil, nil, nil, "bar", "",
+			"Invalid subject tail length. Expects 0 or 1 parts, got 2",
+		},
 		{"demo", 0, "foo", 0, 0, "demo.foo.bar", nil, nil, nil, "bar", "protobuf", ""},
 		{"demo", 0, "foo", 0, 0, "demo.foo.bar.json", nil, nil, nil, "bar", "json", ""},
-		{"demo", 0, "foo", 0, 0, "foo.bar.json", nil, nil, nil, "", "",
-			"Invalid subject prefix. Expected 'demo', got 'foo'"},
+		{
+			"demo", 0, "foo", 0, 0, "foo.bar.json", nil, nil, nil, "", "",
+			"Invalid subject prefix. Expected 'demo', got 'foo'",
+		},
 		{"demo", 2, "foo", 0, 0, "demo.p1.p2.foo.bar.json", []string{"p1", "p2"}, nil, nil, "bar", "json", ""},
 		{"demo", 2, "foo", 1, 0, "demo.p1.p2.foo.sp1.bar.json", []string{"p1", "p2"}, []string{"sp1"}, nil, "bar", "json", ""},
-		{"demo.pkg", 1, "nested.svc", 1, 0, "demo.pkg.p1.nested.svc.sp1.bar",
-			[]string{"p1"}, []string{"sp1"}, nil, "bar", "protobuf", ""},
+		{
+			"demo.pkg", 1, "nested.svc", 1, 0, "demo.pkg.p1.nested.svc.sp1.bar",
+			[]string{"p1"},
+			[]string{"sp1"},
+			nil, "bar", "protobuf", "",
+		},
 	} {
 		pkgParams, svcParams, name, tail, err := nrpc.ParseSubject(
 			tt.pkgSubject, tt.pkgParamsCount,

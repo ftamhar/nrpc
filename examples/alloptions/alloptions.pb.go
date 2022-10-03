@@ -7,7 +7,7 @@
 package main
 
 import (
-	nrpc "github.com/T-J-L/nrpc"
+	nrpc "github.com/ftamhar/nrpc"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

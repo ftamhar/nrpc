@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/T-J-L/nrpc"
+	"github.com/ftamhar/nrpc"
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
 )

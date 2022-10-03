@@ -13,7 +13,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/stretchr/testify/require"
 
-	"github.com/T-J-L/nrpc"
+	"github.com/ftamhar/nrpc"
 )
 
 type TestingLogWriter struct {
@@ -196,13 +196,13 @@ func TestAll(t *testing.T) {
 		defer s.Unsubscribe()
 
 		c1 := NewSvcCustomSubjectClient(c, "default")
-		//c2 := NewSvcSubjectParamsClient(c, "default", "me")
+		// c2 := NewSvcSubjectParamsClient(c, "default", "me")
 
 		t.Run("Concurrent Stream calls", func(t *testing.T) {
 			log.SetOutput(TestingLogWriter{t})
 			var resList []string
 			var wg sync.WaitGroup
-			var resChan = make(chan string, 2)
+			resChan := make(chan string, 2)
 			go func() {
 				for r := range resChan {
 					resList = append(resList, r)
@@ -237,7 +237,7 @@ func TestAll(t *testing.T) {
 			pool.SetMaxPendingDuration(2 * time.Second)
 			var resList []string
 			var wg sync.WaitGroup
-			var resChan = make(chan string, 2)
+			resChan := make(chan string, 2)
 			go func() {
 				for r := range resChan {
 					resList = append(resList, r)
@@ -512,7 +512,6 @@ func commonTests(
 				}
 			}
 		})
-
 	}
 }
 

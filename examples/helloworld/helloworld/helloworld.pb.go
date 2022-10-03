@@ -21,7 +21,7 @@
 package helloworld
 
 import (
-	_ "github.com/T-J-L/nrpc"
+	_ "github.com/ftamhar/nrpc"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

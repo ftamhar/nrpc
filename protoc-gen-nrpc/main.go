@@ -10,7 +10,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/T-J-L/nrpc"
+	"github.com/ftamhar/nrpc"
 
 	"google.golang.org/protobuf/proto"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
@@ -245,8 +245,10 @@ func getPkgImportName(goPkg string) string {
 	return replacer.Replace(goPkg)
 }
 
-var pluginPrometheus bool
-var pathsSourceRelative bool
+var (
+	pluginPrometheus    bool
+	pathsSourceRelative bool
+)
 
 var funcMap = template.FuncMap{
 	"GoPackageName": func(fd *descriptor.FileDescriptorProto) string {
@@ -261,7 +263,7 @@ var funcMap = template.FuncMap{
 	},
 	"GetExtraImports": func(fd *descriptor.FileDescriptorProto) []string {
 		// check all the types used and imports packages from where they come
-		var imports = make(map[string]string)
+		imports := make(map[string]string)
 		for _, sd := range fd.GetService() {
 			for _, md := range sd.GetMethod() {
 				goPkg, _ := getGoType(md.GetInputType())
@@ -389,11 +391,12 @@ var funcMap = template.FuncMap{
 	},
 }
 
-var request plugin.CodeGeneratorRequest
-var currentFile *descriptor.FileDescriptorProto
+var (
+	request     plugin.CodeGeneratorRequest
+	currentFile *descriptor.FileDescriptorProto
+)
 
 func main() {
-
 	log.SetPrefix("protoc-gen-nrpc: ")
 	data, err := io.ReadAll(os.Stdin)
 	if err != nil {
