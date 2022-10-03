@@ -147,7 +147,7 @@ and the nRPC protoc plugin.
 To install the nRPC protoc plugin:
 
 ```
-$ go get github.com/ftamhar/nrpc/protoc-gen-nrpc
+go install github.com/ftamhar/nrpc/protoc-gen-nrpc@latest
 ```
 
 To build and run the example greeter_server:
