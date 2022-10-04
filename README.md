@@ -97,7 +97,7 @@ NATS `Request`.
 func NewGreeterClient(nc *nats.Conn) *GreeterClient {...}
 
 // And has properly typed methods that will marshal and perform a NATS request.
-func (c *GreeterClient) SayHello(req HelloRequest) (resp HelloReply, err error) {...}
+func (c *GreeterClient) SayHello(ctx context.Context, req *HelloRequest) (resp HelloReply, err error) {...}
 ```
 
 The third and final piece is the handler (GreeterHandler). Given a NATS
