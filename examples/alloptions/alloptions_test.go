@@ -319,7 +319,7 @@ func commonTests(
 		c1.Encoding = encoding
 		c2.Encoding = encoding
 
-		r, err := c1.MtSimpleReply(&StringArg{Arg1: "hi"})
+		r, err := c1.MtSimpleReply(context.Background(), &StringArg{Arg1: "hi"})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -327,11 +327,11 @@ func commonTests(
 			t.Error("Invalid reply:", r.GetReply())
 		}
 
-		if err := c1.MtVoidReply(&StringArg{Arg1: "hi"}); err != nil {
+		if err := c1.MtVoidReply(context.Background(), &StringArg{Arg1: "hi"}); err != nil {
 			t.Error("Unexpected error:", err)
 		}
 
-		err = c1.MtVoidReply(&StringArg{Arg1: "please fail"})
+		err = c1.MtVoidReply(context.Background(), &StringArg{Arg1: "please fail"})
 		if err == nil {
 			t.Error("Expected an error")
 		}
@@ -402,7 +402,7 @@ func commonTests(
 
 		t.Run("SubjectParams", func(t *testing.T) {
 			log.SetOutput(TestingLogWriter{t})
-			r, err = c2.MtWithSubjectParams("p1", "p2")
+			r, err = c2.MtWithSubjectParams(context.Background(), "p1", "p2")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -410,7 +410,7 @@ func commonTests(
 				t.Error("Invalid reply:", r.GetReply())
 			}
 
-			r, err = c2.MtWithSubjectParams("invalid", "p2")
+			r, err = c2.MtWithSubjectParams(context.Background(), "invalid", "p2")
 			if err == nil {
 				t.Error("Expected an error")
 			}
@@ -452,7 +452,7 @@ func commonTests(
 				t.Fatal(err)
 			}
 			defer sub.Unsubscribe()
-			c2.MtNoReply()
+			c2.MtNoReply(context.Background())
 			reply, err := sub.Next(time.Second)
 			if err != nil {
 				t.Fatal(err)
@@ -490,7 +490,7 @@ func commonTests(
 				repChan <- msg.GetReply()
 			}()
 
-			err = c2.MtNoReply()
+			err = c2.MtNoReply(context.Background())
 			if err != nil {
 				t.Fatal(err)
 			}

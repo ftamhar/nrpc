@@ -28,7 +28,7 @@ var ErrStreamInvalidMsgCount = errors.New("Stream reply received an incorrect nu
 type NatsConn interface {
 	Publish(subj string, data []byte) error
 	PublishRequest(subj, reply string, data []byte) error
-	Request(subj string, data []byte, timeout time.Duration) (*nats.Msg, error)
+	RequestWithContext(ctx context.Context, subj string, data []byte) (*nats.Msg, error)
 
 	ChanSubscribe(subj string, ch chan *nats.Msg) (*nats.Subscription, error)
 	Subscribe(subj string, handler nats.MsgHandler) (*nats.Subscription, error)
@@ -206,7 +206,7 @@ func ParseSubjectTail(
 	return
 }
 
-func Call(req proto.Message, rep proto.Message, nc NatsConn, subject string, encoding string, timeout time.Duration) error {
+func Call(ctx context.Context, req proto.Message, rep proto.Message, nc NatsConn, subject string, encoding string) error {
 	// encode request
 	rawRequest, err := Marshal(encoding, req)
 	if err != nil {
@@ -226,7 +226,7 @@ func Call(req proto.Message, rep proto.Message, nc NatsConn, subject string, enc
 		}
 		return err
 	}
-	msg, err := nc.Request(subject, rawRequest, timeout)
+	msg, err := nc.RequestWithContext(ctx, subject, rawRequest)
 	if err != nil {
 		log.Printf("nrpc: nats request failed: %v", err)
 		return err
@@ -431,8 +431,10 @@ func (r *Request) SendErrorTooBusy(msg string) error {
 	})
 }
 
-var ErrEOS = errors.New("End of stream")
-var ErrCanceled = errors.New("Call canceled")
+var (
+	ErrEOS      = errors.New("End of stream")
+	ErrCanceled = errors.New("Call canceled")
+)
 
 func NewStreamCallSubscription(
 	ctx context.Context, nc NatsConn, encoding string, subject string,

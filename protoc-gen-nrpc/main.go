@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"go/format"
 	"io"
 	"log"
 	"os"
@@ -466,9 +467,14 @@ func main() {
 
 		currentFile = nil
 
+		b, err := format.Source(buf.Bytes())
+		if err != nil {
+			log.Fatal(err)
+		}
+
 		response.File = append(response.File, &plugin.CodeGeneratorResponse_File{
 			Name:    proto.String(goFileName(fd)),
-			Content: proto.String(buf.String()),
+			Content: proto.String(string(b)),
 		})
 	}
 

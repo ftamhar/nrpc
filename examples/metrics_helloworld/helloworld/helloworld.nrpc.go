@@ -214,14 +214,14 @@ func NewGreeterClient(nc nrpc.NatsConn) *GreeterClient {
 	}
 }
 
-func (c *GreeterClient) SayHello(req *HelloRequest) (resp *HelloReply, err error) {
+func (c *GreeterClient) SayHello(ctx context.Context, req *HelloRequest) (resp *HelloReply, err error) {
 	start := time.Now()
 
 	subject := c.Subject + "." + "SayHello"
 
 	// call
 	resp = new(HelloReply)
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 		clientCallsForGreeter.WithLabelValues(
 			"SayHello", c.Encoding, "call_fail").Inc()

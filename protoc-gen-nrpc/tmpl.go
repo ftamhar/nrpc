@@ -527,7 +527,7 @@ func (c *{{$serviceName}}Client) {{.GetName}}(
 }
 {{- else}}
 
-func (c *{{$serviceName}}Client) {{.GetName}}(
+func (c *{{$serviceName}}Client) {{.GetName}}(ctx context.Context,
 	{{- range GetMethodSubjectParams . -}}
 	{{ . }} string, {{ end -}}
 	{{- if ne .GetInputType ".nrpc.Void" -}}
@@ -558,7 +558,7 @@ func (c *{{$serviceName}}Client) {{.GetName}}(
 	{{else}}
 	resp = new({{GoType .GetOutputType}})
 	{{- end}}
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 {{- if Prometheus}}
 		clientCallsFor{{$serviceName}}.WithLabelValues(

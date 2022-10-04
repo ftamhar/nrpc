@@ -238,13 +238,13 @@ func NewSvcCustomSubjectClient(nc nrpc.NatsConn, pkgParaminstance string) *SvcCu
 	}
 }
 
-func (c *SvcCustomSubjectClient) MtSimpleReply(req *StringArg) (resp *SimpleStringReply, err error) {
+func (c *SvcCustomSubjectClient) MtSimpleReply(ctx context.Context, req *StringArg) (resp *SimpleStringReply, err error) {
 
 	subject := c.PkgSubject + "." + c.PkgParaminstance + "." + c.Subject + "." + "mt_simple_reply"
 
 	// call
 	resp = new(SimpleStringReply)
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 		return // already logged
 	}
@@ -252,14 +252,14 @@ func (c *SvcCustomSubjectClient) MtSimpleReply(req *StringArg) (resp *SimpleStri
 	return
 }
 
-func (c *SvcCustomSubjectClient) MtVoidReply(req *StringArg) (err error) {
+func (c *SvcCustomSubjectClient) MtVoidReply(ctx context.Context, req *StringArg) (err error) {
 
 	subject := c.PkgSubject + "." + c.PkgParaminstance + "." + c.Subject + "." + "mtvoidreply"
 
 	// call
 	resp := new(github_com_ftamhar_nrpc.Void)
 
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 		return // already logged
 	}
@@ -581,14 +581,14 @@ func NewSvcSubjectParamsClient(nc nrpc.NatsConn, pkgParaminstance string, svcPar
 	}
 }
 
-func (c *SvcSubjectParamsClient) MtWithSubjectParams(mp1 string, mp2 string) (resp *SimpleStringReply, err error) {
+func (c *SvcSubjectParamsClient) MtWithSubjectParams(ctx context.Context, mp1 string, mp2 string) (resp *SimpleStringReply, err error) {
 
 	subject := c.PkgSubject + "." + c.PkgParaminstance + "." + c.Subject + "." + c.SvcParamclientid + "." + "mtwithsubjectparams" + "." + mp1 + "." + mp2
 
 	// call
 	req := new(github_com_ftamhar_nrpc.Void)
 	resp = new(SimpleStringReply)
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 		return // already logged
 	}
@@ -621,7 +621,7 @@ func (c *SvcSubjectParamsClient) MtStreamedReplyWithSubjectParams(
 	return err
 }
 
-func (c *SvcSubjectParamsClient) MtNoReply() (err error) {
+func (c *SvcSubjectParamsClient) MtNoReply(ctx context.Context) (err error) {
 
 	subject := c.PkgSubject + "." + c.PkgParaminstance + "." + c.Subject + "." + c.SvcParamclientid + "." + "mtnoreply"
 
@@ -629,7 +629,7 @@ func (c *SvcSubjectParamsClient) MtNoReply() (err error) {
 	req := new(github_com_ftamhar_nrpc.Void)
 	resp := new(github_com_ftamhar_nrpc.NoReply)
 
-	err = nrpc.Call(req, resp, c.nc, subject, c.Encoding, c.Timeout)
+	err = nrpc.Call(ctx, req, resp, c.nc, subject, c.Encoding)
 	if err != nil {
 		return // already logged
 	}
